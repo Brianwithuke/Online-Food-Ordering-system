@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Users - Food Ordering</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+    }
+    .content-wrapper {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .main-content {
+      flex: 1;
+    }
+    .bg-yellow {
+      background-color: #ffc107 !important;
+    }
+    .table-yellow {
+      background-color: #fff5c8;
+    }
+    .btn-outline-yellow {
+      color: #000;
+      border-color: #000;
+    }
+    .btn-outline-yellow:hover {
+      background-color: #ffdb58;
+      color: #000;
+    }
+    .btn-yellow {
+      background-color: #ffc107;
+      color: #000;
+    }
+    .btn-yellow:hover {
+      background-color: #e0a800;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+<div class="content-wrapper">
+  <nav class="navbar navbar-dark bg-yellow">
+    <div class="container-fluid">
+      <a class="navbar-brand text-dark" href="/admin/dashboard">🍽️ Admin Dashboard</a>
+      <div class="d-flex">
+        <a href="/admin/products" class="btn btn-outline-yellow me-2">Products</a>
+        <a href="/admin/users" class="btn btn-outline-yellow me-2">Users</a>
+        <a href="/admin/orders" class="btn btn-outline-yellow me-2">Orders</a>
+        <a href="/admin/food_categories" class="btn btn-outline-yellow me-2">Categories</a>
+        <a href="/logout" class="btn btn-dark">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-4 main-content">
+    <h2 class="mb-4">Manage Users</h2>
+    <table class="table table-bordered text-center align-middle">
+      <thead class="table-yellow">
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dummy User Data -->
+        <tr>
+          <td>1</td>
+          <td>admin1</td>
+          <td>admin@foodorder.com</td>
+          <td>admin</td>
+          <td>2024-01-15</td>
+          <td>
+            <form action="/admin/delete_user" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+              <input type="hidden" name="user_id" value="1">
+              <button class="btn btn-yellow btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>johndoe</td>
+          <td>john.doe@example.com</td>
+          <td>customer</td>
+          <td>2024-01-20</td>
+          <td>
+            <form action="/admin/delete_user" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+              <input type="hidden" name="user_id" value="2">
+              <button class="btn btn-yellow btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>janedoe</td>
+          <td>jane.doe@example.com</td>
+          <td>customer</td>
+          <td>2024-01-25</td>
+          <td>
+            <form action="/admin/delete_user" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+              <input type="hidden" name="user_id" value="3">
+              <button class="btn btn-yellow btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>admin2</td>
+          <td>admin2@foodorder.com</td>
+          <td>admin</td>
+          <td>2024-02-01</td>
+          <td>
+            <form action="/admin/delete_user" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+              <input type="hidden" name="user_id" value="4">
+              <button class="btn btn-yellow btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>sarahsmith</td>
+          <td>sarah.smith@example.com</td>
+          <td>customer</td>
+          <td>2024-02-10</td>
+          <td>
+            <form action="/admin/delete_user" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+              <input type="hidden" name="user_id" value="5">
+              <button class="btn btn-yellow btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>mikejones</td>
+          <td>mike.jones@example.com</td>
+          <td>customer</td>
+          <td>2024-02-15</td>
+          <td>
+            <form action="/admin/delete_user" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+              <input type="hidden" name="user_id" value="6">
+              <button class="btn btn-yellow btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>annalee</td>
+          <td>anna.lee@example.com</td>
+          <td>customer</td>
+          <td>2024-03-01</td>
+          <td>
+            <form action="/admin/delete_user" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+              <input type="hidden" name="user_id" value="7">
+              <button class="btn btn-yellow btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>admin3</td>
+          <td>admin3@foodorder.com</td>
+          <td>admin</td>
+          <td>2024-03-10</td>
+          <td>
+            <form action="/admin/delete_user" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+              <input type="hidden" name="user_id" value="8">
+              <button class="btn btn-yellow btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>bobwilson</td>
+          <td>bob.wilson@example.com</td>
+          <td>customer</td>
+          <td>2024-03-20</td>
+          <td>
+            <form action="/admin/delete_user" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+              <input type="hidden" name="user_id" value="9">
+              <button class="btn btn-yellow btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>emilypark</td>
+          <td>emily.park@example.com</td>
+          <td>customer</td>
+          <td>2024-04-05</td>
+          <td>
+            <form action="/admin/delete_user" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+              <input type="hidden" name="user_id" value="10">
+              <button class="btn btn-yellow btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="text-center text-dark py-4 bg-yellow mt-auto">
+    &copy; 2024 Online Food Ordering. All rights reserved.
+  </footer>
+</div>
+</body>
+</html>
