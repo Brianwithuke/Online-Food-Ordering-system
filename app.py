@@ -465,7 +465,7 @@ def admin_get_users():
 def admin_dashboard():
     if 'user_id' not in session or session.get('role') != 'admin':
         return redirect('/login')
-    return render_template('admin/dashboard.html')
+    return render_template('admin/admin_dash_test2.html')
 
 
 @app.route('/admin/products')
@@ -490,7 +490,7 @@ def admin_products():
             'category': category.category_name if category else "Uncategorized"
         })
 
-    return render_template('admin/products.html', products=products)
+    return render_template('admin/products_dummydata.html', products=products)
 
 
 import os
@@ -570,7 +570,7 @@ def admin_orders():
 
     orders = Order.query.order_by(Order.order_date.desc()).all()
 
-    return render_template('admin/orders.html', orders=orders)
+    return render_template('admin/orders_dummydata.html', orders=orders)
 
 
 @app.route('/admin/users')
@@ -581,7 +581,7 @@ def admin_users():
         return redirect('/login')
 
     users = User.query.order_by(User.created_at.desc()).all()
-    return render_template('admin/users.html', users=users)
+    return render_template('admin/users_dummydata.html', users=users)
 
 
 @app.route('/admin/delete_user', methods=['POST'])

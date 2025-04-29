@@ -3,27 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Dashboard - Online Bookstore</title>
+  <title>User Dashboard - Online Food Ordering</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
+    /* General styles */
     body {
-      background-color: #f4f8fb;
+      background-color: #f8f9fa;
     }
-    .card {
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 12px;
-      transition: transform 0.3s ease;
+    .content-wrapper {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .card:hover {
-      transform: translateY(-5px);
+    .main-content {
+      flex: 1;
+    }
+
+    /* Navbar styling */
+    .navbar {
+      background-color: #3498db !important;
     }
     .navbar-brand {
       font-weight: bold;
       font-size: 1.4rem;
     }
-    footer {
-      margin-top: auto;
-    }
+
+    /* Dashboard elements */
     .dashboard-title {
       font-size: 2rem;
       font-weight: 600;
@@ -31,14 +36,67 @@
     }
     .search-box {
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    /* Summary cards */
+    .summary-card {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      transition: transform 0.3s ease;
+    }
+    .summary-card:hover {
+      transform: translateY(-5px);
+    }
+
+    /* Food cards */
+    .food-card {
+      border: 1px solid #e9ecef;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+    .food-card:hover {
+      transform: translateY(-5px);
+    }
+    .food-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
+    .food-info {
+      padding: 15px;
+    }
+    .food-actions {
+      margin-top: auto;
+      padding: 15px;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #3498db;
+    }
+
+    /* Badge styling */
+    .badge.bg-special {
+      background-color: #e74c3c !important;
     }
   </style>
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body>
+<div class="content-wrapper">
   <!-- Navbar -->
-  <nav class="navbar navbar-dark bg-danger">
+  <nav class="navbar navbar-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/user/dashboard">📚 Online Bookstore</a>
+      <a class="navbar-brand" href="/user/dashboard">🍔 Online Food Ordering</a>
       <div class="d-flex">
         <a href="/cart" class="btn btn-outline-light me-2">Cart</a>
         <a href="/orders" class="btn btn-outline-light me-2">Orders</a>
@@ -47,90 +105,274 @@
     </div>
   </nav>
 
-  <!-- Main Content -->
-  <div class="container py-4">
+  <div class="container py-4 main-content">
     <h2 class="dashboard-title mb-4 text-center">Welcome, {{ session['username'] }}</h2>
-    <div class="row mb-4 justify-content-center">
-      <div class="col-md-6">
-        <input type="text" id="searchInput" class="form-control search-box" placeholder="Search by book title or type">
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="summary-card">
+          <h4>Recent Orders</h4>
+          <h2 id="totalOrders">3</h2>
+          <p class="text-muted">Last 7 days</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="summary-card">
+          <h4>Favorite Items</h4>
+          <h2 id="favoriteItems">5</h2>
+          <p class="text-muted">Your saved favorites</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="summary-card">
+          <h4>Cart Items</h4>
+          <h2 id="cartItems">2</h2>
+          <p class="text-muted">Ready for checkout</p>
+        </div>
       </div>
     </div>
-    <div id="productList" class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
-      <!-- Books will be dynamically inserted here -->
+
+    <!-- Search Box -->
+    <div class="row mb-4 justify-content-center">
+      <div class="col-md-8">
+        <div class="search-box">
+          <input type="text" id="searchInput" class="form-control" placeholder="Search menu items...">
+        </div>
+      </div>
+    </div>
+
+    <!-- Food Categories -->
+    <div class="category-filter mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Browse by Category</h5>
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-outline-primary active" onclick="filterFoods('all')">All Items</button>
+            <button type="button" class="btn btn-outline-primary" onclick="filterFoods('burgers')">Burgers</button>
+            <button type="button" class="btn btn-outline-primary" onclick="filterFoods('chicken')">Chicken</button>
+            <button type="button" class="btn btn-outline-primary" onclick="filterFoods('salads')">Salads</button>
+            <button type="button" class="btn btn-outline-primary" onclick="filterFoods('sides')">Sides</button>
+            <button type="button" class="btn btn-outline-primary" onclick="filterFoods('drinks')">Drinks</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Food List -->
+    <div id="productList" class="row">
+      <!-- Food items will be dynamically inserted here -->
     </div>
   </div>
 
   <!-- Footer -->
-  <footer class="text-center text-white py-4 bg-danger mt-auto">
-    &copy; 2024 Online Bookstore. All rights reserved.
+  <footer class="text-center text-white py-4 mt-auto">
+    &copy; 2024 Online Food Ordering. All rights reserved.
   </footer>
+</div>
 
-  <!-- JavaScript -->
-  <script>
-    function addToCart(productId) {
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      const existing = cart.find(item => item.product_id === productId);
-      if (existing) {
-        alert('This book is already in your cart!');
-        return;
+<!-- JavaScript -->
+<script>
+  // Dummy food data (based on the products data from the admin panel)
+  const foods = [
+    {
+      id: 1,
+      title: "Classic Burger",
+      price: 9.99,
+      description: "Juicy beef patty with lettuce, tomato, onion, and our special sauce on a toasted sesame seed bun.",
+      category: "burgers",
+      image_url: "/images/products/classic-burger.jpg",
+      available: true,
+      stock: 25,
+      special: false
+    },
+    {
+      id: 2,
+      title: "Cheese Burger",
+      price: 10.99,
+      description: "Our classic burger topped with melted cheddar cheese.",
+      category: "burgers",
+      image_url: "/uploads/Cheese-Burger.jpg",
+      available: true,
+      stock: 20,
+      special: false
+    },
+    {
+      id: 3,
+      title: "Grilled Chicken",
+      price: 12.99,
+      description: "Marinated grilled chicken breast with herbs and spices, served with steamed vegetables.",
+      category: "chicken",
+      image_url: "/uploads/Chicken-Burger-16.jpg",
+      available: true,
+      stock: 15,
+      special: true
+    },
+    {
+      id: 4,
+      title: "Caesar Salad",
+      price: 8.99,
+      description: "Fresh romaine lettuce with Caesar dressing, croutons, and parmesan cheese.",
+      category: "salads",
+      image_url: "/images/products/caesar-salad.jpg",
+      available: true,
+      stock: 10,
+      special: false
+    },
+    {
+      id: 5,
+      title: "French Fries",
+      price: 3.99,
+      description: "Crispy golden fries seasoned with salt.",
+      category: "sides",
+      image_url: "/images/products/french-fries.jpg",
+      available: true,
+      stock: 30,
+      special: false
+    },
+    {
+      id: 6,
+      title: "Soft Drink",
+      price: 2.49,
+      description: "Choice of cola, lemon-lime, or root beer.",
+      category: "drinks",
+      image_url: "/images/products/soft-drink.jpg",
+      available: true,
+      stock: 50,
+      special: false
+    },
+    {
+      id: 7,
+      title: "Milkshake",
+      price: 5.99,
+      description: "Creamy milkshake available in chocolate, vanilla, or strawberry.",
+      category: "drinks",
+      image_url: "/images/products/milkshake.jpg",
+      available: true,
+      stock: 12,
+      special: true
+    },
+    {
+      id: 8,
+      title: "Chicken Wings",
+      price: 11.99,
+      description: "Crispy chicken wings with your choice of sauce: BBQ, Buffalo, or Honey Garlic.",
+      category: "chicken",
+      image_url: "/images/products/chicken-wings.jpg",
+      available: false,
+      stock: 0,
+      special: false
+    }
+  ];
+
+  function addToCart(productId) {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const existing = cart.find(item => item.product_id === productId);
+    if (existing) {
+      alert('This item is already in your cart!');
+      return;
+    }
+    cart.push({ product_id: productId, quantity: 1 });
+    localStorage.setItem('cart', JSON.stringify(cart));
+    document.getElementById('cartItems').innerText = cart.length;
+    alert('Item added to cart!');
+    renderFoods(window.allFoods); // refresh to update buttons
+  }
+
+  function addToFavorites(productId) {
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const existing = favorites.find(item => item.product_id === productId);
+    if (existing) {
+      alert('This item is already in your favorites!');
+      return;
+    }
+    favorites.push({ product_id: productId });
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    document.getElementById('favoriteItems').innerText = favorites.length;
+    alert('Item added to favorites!');
+  }
+
+  function renderFoods(data) {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const productContainer = document.getElementById('productList');
+
+    productContainer.innerHTML = data.map(food => {
+      const inCart = cart.find(item => item.product_id === food.id);
+      const inFavorites = favorites.find(item => item.product_id === food.id);
+      let buttonBlock = '';
+
+      if (!food.available || food.stock === 0) {
+        buttonBlock = `<button class="btn btn-secondary w-100 mb-2" disabled>Unavailable</button>`;
+      } else if (inCart) {
+        buttonBlock = `<button class="btn btn-outline-secondary w-100 mb-2" disabled>Already in Cart</button>`;
+      } else {
+        buttonBlock = `<button onclick="addToCart(${food.id})" class="btn btn-primary w-100 mb-2">Add to Cart</button>`;
       }
-      cart.push({ product_id: productId, quantity: 1 });
-      localStorage.setItem('cart', JSON.stringify(cart));
-      alert('Book added to cart!');
-      renderProducts(window.allProducts); // refresh to update buttons
-    }
 
-    function renderProducts(data) {
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      const productContainer = document.getElementById('productList');
+      let favoritesButton = inFavorites
+        ? `<button class="btn btn-outline-secondary w-100" disabled>In Favorites</button>`
+        : `<button onclick="addToFavorites(${food.id})" class="btn btn-outline-primary w-100">Add to Favorites</button>`;
 
-      productContainer.innerHTML = data.map(product => {
-        const inCart = cart.find(item => item.product_id === product.id);
-        let buttonBlock = '';
+      let specialBadge = food.special
+        ? `<span class="badge bg-special position-absolute top-0 end-0 m-2">Chef's Special</span>`
+        : '';
 
-        if (product.stock === 0) {
-          buttonBlock = `<button class="btn btn-secondary w-100" disabled>Out of Stock</button>`;
-        } else if (inCart) {
-          buttonBlock = `<button class="btn btn-outline-secondary w-100" disabled>Already in Cart</button>`;
-        } else {
-          buttonBlock = `<button onclick="addToCart(${product.id})" class="btn btn-primary w-100">Add to Cart</button>`;
-        }
-
-        return `
-          <div class="col-md-4">
-            <div class="card h-100 d-flex flex-column">
-              <img src="/${product.image_url}" class="card-img-top" alt="${product.title}" style="height: 350px; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px;">
-              <div class="card-body d-flex flex-column">
-                <h5 class="card-title">${product.title}</h5>
-                <p class="card-text text-muted">by ${product.author}</p>
-                <p><strong>Price:</strong> ₹${product.price}</p>
-                <p><strong>Stock:</strong> ${product.stock}</p>
-                <div class="mt-auto">
-                  <a href="/product_details/${product.id}" class="btn btn-outline-primary w-100 mb-2">View Details</a>
-                  ${buttonBlock}
-                </div>
-              </div>
+      return `
+        <div class="col-md-4 food-item" data-category="${food.category}">
+          <div class="food-card d-flex flex-column h-100 position-relative">
+            ${specialBadge}
+            <img src="${food.image_url}" class="food-image" alt="${food.title}">
+            <div class="food-info">
+              <h5 class="card-title">${food.title}</h5>
+              <p><strong>Price:</strong> $${food.price.toFixed(2)}</p>
+              <p>${food.description}</p>
             </div>
-          </div>`;
-      }).join('');
+            <div class="food-actions mt-auto">
+              <a href="/product_details/${food.id}" class="btn btn-outline-primary w-100 mb-2">View Details</a>
+              ${buttonBlock}
+              ${favoritesButton}
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function filterFoods(category) {
+    // Update active button
+    document.querySelectorAll('.category-filter .btn').forEach(button => {
+      button.classList.remove('active');
+    });
+    event.target.classList.add('active');
+
+    // Filter foods
+    if (category === 'all') {
+      renderFoods(window.allFoods);
+    } else {
+      const filtered = window.allFoods.filter(food => food.category === category);
+      renderFoods(filtered);
     }
+  }
 
-    window.onload = async () => {
-      const res = await fetch('/get_products');
-      const products = await res.json();
-      window.allProducts = products;
+  window.onload = function() {
+    window.allFoods = foods;
+    renderFoods(foods);
 
-      renderProducts(products);
+    // Initialize counts
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    document.getElementById('cartItems').innerText = cart.length;
+    document.getElementById('favoriteItems').innerText = favorites.length;
 
-      document.getElementById('searchInput').addEventListener('input', () => {
-        const keyword = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = products.filter(p =>
-          p.title.toLowerCase().includes(keyword) ||
-          (p.book_type && p.book_type.toLowerCase().includes(keyword))
-        );
-        renderProducts(filtered);
-      });
-    };
-  </script>
-</body>
-</html>
+    // Set up search
+    document.getElementById('searchInput').addEventListener('input', () => {
+      const keyword = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = foods.filter(food =>
+        food.title.toLowerCase().includes(keyword) ||
+        food.description.toLowerCase().includes(keyword) ||
+        food.category.toLowerCase().includes(keyword)
+      );
+      renderFoods(filtered);
+    });
+  };
+</script>

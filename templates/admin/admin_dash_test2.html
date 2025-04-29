@@ -7,9 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    html, body {
-      height: 100%;
-    }
+    /* Simple and clean styles */
     .content-wrapper {
       min-height: 100vh;
       display: flex;
@@ -18,6 +16,9 @@
     .main-content {
       flex: 1;
     }
+    .navbar {
+      background-color: #3498db !important;
+    }
     .chart-container {
       margin-bottom: 20px;
       padding: 15px;
@@ -25,34 +26,26 @@
       background-color: #f8f9fa;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    .inventory-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .inventory-table th, .inventory-table td {
-      padding: 8px 12px;
-      border: 1px solid #dee2e6;
-    }
-    .inventory-table th {
-      background-color: #f2f2f2;
-    }
-    .inventory-section {
+    .summary-card {
       background-color: #f8f9fa;
       padding: 15px;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
     }
-    .no-data-message {
-      text-align: center;
-      padding: 20px;
-      color: #6c757d;
-      font-style: italic;
+    .table-responsive {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    footer {
+      background-color: #3498db;
     }
   </style>
 </head>
 <body>
 <div class="content-wrapper">
-  <nav class="navbar navbar-dark bg-danger">
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="/admin/dashboard">🛠️ Admin Dashboard</a>
       <div class="d-flex">
@@ -66,243 +59,261 @@
   </nav>
 
   <div class="container py-4 main-content">
-    <h2 class="mb-4">Welcome, Admin</h2>
+    <h2 class="mb-4">Welcome to the Admin Dashboard</h2>
 
+    <!-- Summary Cards -->
     <div class="row mb-4">
-      <!-- Order Total Chart -->
-      <div class="col-md-6">
-        <div class="chart-container">
-          <h4>Order Total</h4>
-          <canvas id="orderChart"></canvas>
-          <div id="orderChartNoData" class="no-data-message d-none">No order data available</div>
+      <div class="col-md-3">
+        <div class="summary-card">
+          <h4>Total Orders</h4>
+          <h2 id="totalOrders">7</h2>
+          <p class="text-muted">Last 7 days</p>
         </div>
       </div>
-
-      <!-- Profit Chart -->
-      <div class="col-md-6">
-        <div class="chart-container">
-          <h4>Profits</h4>
-          <canvas id="profitChart"></canvas>
-          <div id="profitChartNoData" class="no-data-message d-none">No profit data available</div>
+      <div class="col-md-3">
+        <div class="summary-card">
+          <h4>Total Revenue</h4>
+          <h2 id="totalRevenue">$214.75</h2>
+          <p class="text-muted">Last 7 days</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="summary-card">
+          <h4>Active Users</h4>
+          <h2 id="activeUsers">10</h2>
+          <p class="text-muted">Registered users</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="summary-card">
+          <h4>Products</h4>
+          <h2 id="totalProducts">7</h2>
+          <p class="text-muted">Available items</p>
         </div>
       </div>
     </div>
 
-    <div class="row">
-      <!-- Inventory Section -->
+    <div class="row mb-4">
+      <!-- Order Chart -->
       <div class="col-md-6">
-        <div class="inventory-section">
-          <h4>Inventory</h4>
-          <div class="table-responsive">
-            <table class="inventory-table">
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Units sold</th>
-                  <th>Amt made</th>
-                </tr>
-              </thead>
-              <tbody id="inventoryTableBody">
-                <!-- Will be populated via JS -->
-              </tbody>
-            </table>
-            <div id="inventoryNoData" class="no-data-message d-none">No inventory data available</div>
-          </div>
+        <div class="chart-container">
+          <h4>Orders & Revenue</h4>
+          <canvas id="orderChart"></canvas>
         </div>
       </div>
 
       <!-- User Chart -->
       <div class="col-md-6">
         <div class="chart-container">
-          <h4>Users</h4>
-          <canvas id="userChart"></canvas>
-          <div id="userChartNoData" class="no-data-message d-none">No user data available</div>
+          <h4>Order Status Distribution</h4>
+          <canvas id="statusChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Top Selling Products Table -->
+      <div class="col-md-6">
+        <div class="summary-card">
+          <h4>Top Selling Products</h4>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Units Sold</th>
+                  <th>Revenue</th>
+                </tr>
+              </thead>
+              <tbody id="productTableBody">
+                <!-- Will be populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Orders -->
+      <div class="col-md-6">
+        <div class="summary-card">
+          <h4>Recent Orders</h4>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="recentOrdersBody">
+                <!-- Will be populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <footer class="text-center text-white py-4 bg-danger mt-auto">
+  <footer class="text-center text-white py-3 mt-auto">
     &copy; 2024 Online Food Ordering. All rights reserved.
   </footer>
 </div>
 
 <script>
-  window.onload = async () => {
-    try {
-      // Fetch data from backend
-      const orders = await fetch('/admin/get_orders').then(res => res.json());
-      const users = await fetch('/admin/get_users').then(res => res.json());
-      const products = await fetch('/admin/get_products').then(res => res.json());
-      const orderItems = await fetch('/admin/get_order_items').then(res => res.json());
+  // Simple JavaScript for a collegiate entry level
+  window.onload = function() {
+    // Product data (from products file)
+    const products = [
+      { name: "Classic Burger", price: 9.99, unitsSold: 75, revenue: 749.25 },
+      { name: "Cheese Burger", price: 10.99, unitsSold: 50, revenue: 549.50 },
+      { name: "Grilled Chicken", price: 12.99, unitsSold: 45, revenue: 584.55 },
+      { name: "Caesar Salad", price: 8.99, unitsSold: 30, revenue: 269.70 },
+      { name: "French Fries", price: 3.99, unitsSold: 120, revenue: 478.80 },
+      { name: "Soft Drink", price: 2.49, unitsSold: 200, revenue: 498.00 },
+      { name: "Milkshake", price: 5.99, unitsSold: 65, revenue: 389.35 }
+    ];
 
-      // Process order data by day
-      if (orders && orders.length > 0) {
-        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        const dailyOrders = Array(7).fill(0);
-        const dailyProfits = Array(7).fill(0);
+    // Order data (from orders file)
+    const orders = [
+      { id: 10001, customer: "John Doe", date: "2024-04-20", amount: 26.47, status: "Pending" },
+      { id: 10002, customer: "Sarah Smith", date: "2024-04-19", amount: 38.95, status: "Processing" },
+      { id: 10003, customer: "Mike Jones", date: "2024-04-18", amount: 32.97, status: "Completed" },
+      { id: 10004, customer: "Anna Lee", date: "2024-04-17", amount: 21.98, status: "Cancelled" },
+      { id: 10005, customer: "Bob Wilson", date: "2024-04-21", amount: 22.97, status: "Pending" },
+      { id: 10006, customer: "Emily Park", date: "2024-04-20", amount: 41.95, status: "Processing" },
+      { id: 10007, customer: "Jane Doe", date: "2024-04-19", amount: 29.46, status: "Completed" }
+    ];
 
-        // Calculate the date 7 days ago
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-        sevenDaysAgo.setHours(0, 0, 0, 0);
+    // Fill top selling products table
+    const productTableBody = document.getElementById('productTableBody');
+    // Sort products by units sold (descending)
+    products.sort((a, b) => b.unitsSold - a.unitsSold);
+    // Display top 5 products
+    products.slice(0, 5).forEach(product => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${product.name}</td>
+        <td>${product.unitsSold}</td>
+        <td>$${product.revenue.toFixed(2)}</td>
+      `;
+      productTableBody.appendChild(row);
+    });
 
-        // Filter orders from the last 7 days
-        const recentOrders = orders.filter(order => {
-          const orderDate = new Date(order.created_at);
-          return orderDate >= sevenDaysAgo;
-        });
+    // Fill recent orders table
+    const recentOrdersBody = document.getElementById('recentOrdersBody');
+    // Sort orders by date (most recent first)
+    orders.sort((a, b) => new Date(b.date) - new Date(a.date));
+    // Display most recent 5 orders
+    orders.slice(0, 5).forEach(order => {
+      const row = document.createElement('tr');
+      let statusClass = '';
 
-        // Group by day
-        recentOrders.forEach(order => {
-          const orderDate = new Date(order.created_at);
-          const dayIndex = orderDate.getDay();
-          dailyOrders[dayIndex] += order.total_amount;
-
-          // Assuming a 20% profit margin for simplicity
-          // In a real system, you would calculate this based on product costs
-          dailyProfits[dayIndex] += (order.total_amount * 0.2);
-        });
-
-        // Order total chart (daily)
-        new Chart(document.getElementById('orderChart'), {
-          type: 'bar',
-          data: {
-            labels: days,
-            datasets: [{
-              label: 'Order Total (₹)',
-              data: dailyOrders,
-              backgroundColor: 'rgba(255, 99, 132, 0.7)'
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: true
-              }
-            }
-          }
-        });
-
-        // Profit chart for the last 7 days
-        new Chart(document.getElementById('profitChart'), {
-          type: 'line',
-          data: {
-            labels: days,
-            datasets: [{
-              label: 'Profit (₹)',
-              data: dailyProfits,
-              borderColor: 'rgb(75, 192, 192)',
-              backgroundColor: 'rgba(75, 192, 192, 0.5)',
-              tension: 0.1
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: true
-              }
-            }
-          }
-        });
-      } else {
-        document.getElementById('orderChartNoData').classList.remove('d-none');
-        document.getElementById('profitChartNoData').classList.remove('d-none');
+      // Determine badge color based on status
+      switch(order.status) {
+        case 'Pending': statusClass = 'bg-warning text-dark'; break;
+        case 'Processing': statusClass = 'bg-info'; break;
+        case 'Completed': statusClass = 'bg-success'; break;
+        case 'Cancelled': statusClass = 'bg-danger'; break;
       }
 
-      // Process inventory data (product sales)
-      if (products && products.length > 0 && orderItems && orderItems.length > 0) {
-        // Create a map of product ID to product details
-        const productMap = {};
-        products.forEach(product => {
-          productMap[product.id] = {
-            name: product.name,
-            unitsSold: 0,
-            amountMade: 0
-          };
-        });
+      row.innerHTML = `
+        <td>${order.id}</td>
+        <td>${order.customer}</td>
+        <td>$${order.amount}</td>
+        <td><span class="badge ${statusClass}">${order.status}</span></td>
+      `;
+      recentOrdersBody.appendChild(row);
+    });
 
-        // Count units sold and amount made for each product
-        orderItems.forEach(item => {
-          if (productMap[item.product_id]) {
-            productMap[item.product_id].unitsSold += item.quantity;
-            productMap[item.product_id].amountMade += (item.price * item.quantity);
+    // Create order chart
+    const orderChartCtx = document.getElementById('orderChart').getContext('2d');
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dailyOrders = [1, 2, 0, 1, 1, 2, 0];
+    const dailyRevenue = [26.47, 68.41, 0, 21.98, 32.97, 64.92, 0];
+
+    new Chart(orderChartCtx, {
+      type: 'bar',
+      data: {
+        labels: days,
+        datasets: [
+          {
+            label: 'Orders',
+            data: dailyOrders,
+            backgroundColor: 'rgba(52, 152, 219, 0.5)',
+            yAxisID: 'y',
+          },
+          {
+            label: 'Revenue ($)',
+            data: dailyRevenue,
+            type: 'line',
+            borderColor: 'rgba(231, 76, 60, 1)',
+            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+            fill: true,
+            yAxisID: 'y1',
           }
-        });
-
-        // Convert map to array and sort by units sold
-        const inventoryData = Object.values(productMap)
-          .filter(product => product.unitsSold > 0)
-          .sort((a, b) => b.unitsSold - a.unitsSold);
-
-        // Populate inventory table
-        const tableBody = document.getElementById('inventoryTableBody');
-
-        if (inventoryData.length > 0) {
-          inventoryData.forEach(item => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-              <td>${item.name}</td>
-              <td>${item.unitsSold}</td>
-              <td>₹${item.amountMade.toFixed(2)}</td>
-            `;
-            tableBody.appendChild(row);
-          });
-        } else {
-          document.getElementById('inventoryNoData').classList.remove('d-none');
-        }
-      } else {
-        document.getElementById('inventoryNoData').classList.remove('d-none');
-      }
-
-      // User role distribution chart
-      if (users && users.length > 0) {
-        const customers = users.filter(u => u.role === 'customer').length;
-        const admins = users.filter(u => u.role === 'admin').length;
-
-        if (customers > 0 || admins > 0) {
-          new Chart(document.getElementById('userChart'), {
-            type: 'doughnut',
-            data: {
-              labels: ['Customers', 'Admins'],
-              datasets: [{
-                label: 'User Roles',
-                data: [customers, admins],
-                backgroundColor: ['#28a745', '#ffc107']
-              }]
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            position: 'left',
+            title: {
+              display: true,
+              text: 'Number of Orders'
+            }
+          },
+          y1: {
+            beginAtZero: true,
+            position: 'right',
+            title: {
+              display: true,
+              text: 'Revenue ($)'
             },
-            options: {
-              responsive: true,
-              plugins: {
-                legend: {
-                  position: 'top',
-                }
-              }
+            grid: {
+              drawOnChartArea: false
             }
-          });
-        } else {
-          document.getElementById('userChartNoData').classList.remove('d-none');
+          }
         }
-      } else {
-        document.getElementById('userChartNoData').classList.remove('d-none');
       }
+    });
 
-    } catch (error) {
-      console.error('Error loading dashboard data:', error);
+    // Create status chart
+    const statusChartCtx = document.getElementById('statusChart').getContext('2d');
+    const statusCounts = {
+      'Pending': 2,
+      'Processing': 2,
+      'Completed': 2,
+      'Cancelled': 1
+    };
 
-      // Show error messages for all sections
-      document.getElementById('orderChartNoData').classList.remove('d-none');
-      document.getElementById('orderChartNoData').textContent = 'Error loading order data';
-
-      document.getElementById('profitChartNoData').classList.remove('d-none');
-      document.getElementById('profitChartNoData').textContent = 'Error loading profit data';
-
-      document.getElementById('inventoryNoData').classList.remove('d-none');
-      document.getElementById('inventoryNoData').textContent = 'Error loading inventory data';
-
-      document.getElementById('userChartNoData').classList.remove('d-none');
-      document.getElementById('userChartNoData').textContent = 'Error loading user data';
-    }
+    new Chart(statusChartCtx, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(statusCounts),
+        datasets: [{
+          data: Object.values(statusCounts),
+          backgroundColor: [
+            'rgba(241, 196, 15, 0.8)',  // Pending - yellow
+            'rgba(52, 152, 219, 0.8)',  // Processing - blue
+            'rgba(46, 204, 113, 0.8)',  // Completed - green
+            'rgba(231, 76, 60, 0.8)'    // Cancelled - red
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom',
+          }
+        }
+      }
+    });
   }
 </script>
 </body>
